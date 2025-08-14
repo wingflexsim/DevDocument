@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>USB HID 连接示例</title>
+    <style>
+        [v-cloak] {
+            visibility: hidden;
+        }
+
+        pre, code {
+            font-family: Consolas, serif;
+        }
+
+        #app {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            flex-wrap: wrap;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-content: flex-start;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+<div id="app" v-cloak>
+    <div class="container">
+
+        <img src="./static/logo.png" alt="Logo"/>
+        <h1>USB HID 连接示例（JavaScript）</h1>
+        <p>GitHub：<a href="https://github.com/wingflexsim/DevDocument">https://github.com/wingflexsim/DevDocument</a>
+        </p>
+        <p>官方网站：<a href="https://wingflexsim.com/">https://wingflexsim.com/</a></p>
+        <p>建议您阅读本示例页面的HTML源代码来了解代码实现细节。</p>
+        <div>
+            <h2>0. 查询您的浏览器是否支持USB HID功能：{{ isSupportUSBHID ? "支持" : "不支持" }}</h2>
+            <p>（如果提示不支持，请使用Chrome、Edge等现代浏览器。）</p>
+            <p>示例代码：</p>
+            <pre>
+        if(navigator.hid !== undefined){
+            // 条件成立则支持
+            isSupportUSBHID.value = true;
+        }
+        </pre>
+        </div>
+        <div>
+            <h2>1. 选择设备</h2>
+            选择 WINGFLEX 开头的设备。
+            <p>（受浏览器安全性限制，必须通过用户主动操作，例如点击按钮，才能唤起选择设备的对话框。）</p>
+            <input type="button" value="点此选择设备" @click="selectDevice"/>
+            <p>
+                当前选择的设备：{{
+                    currentDevice ? `${currentDevice.productName}(VID: PID:${currentDevice.vendorId}, PID: ${currentDevice.productId})` : "未选择"
+                }}</p>
+            <p>示例代码：</p>
+            <pre>
+        function selectDevice() {
+            navigator.hid.requestDevice({filters: []})
+                .then(async (selectedDevices) => {
+                    // 用户取消选择设备的处理
+                    if (selectedDevices[0] === undefined) {
+                        alert("用户已取消选择")
+                        return;
+                    }
+
+                    // 用户选择了设备的处理,，打开浏览器控制台查看对象详情
+                    let device = selectedDevices[0];
+                    console.log("已选择设备：")
+                    console.log(device)
+
+                    // 将设备对象传递给Vue响应式对象，便于在HTML显示设备信息
+                    currentDevice.value = device
+                });
+        }
+        </pre>
+        </div>
+        <div>
+            <h2>2. 注册报告输入事件</h2>
+            <p>时间戳：<code>{{ uplinkTimestamp }} ms</code></p>
+            <p>设备上行实时数据：<code>{{ currentUplinkStr }}</code></p>
+            <p>示例代码：</p>
+            <pre>
+        device.oninputreport = (event) => {
+            // 记录时间戳
+            uplinkTimestamp.value = new Date().getTime();
+            // 读取64字节的uint8类型数据
+            let data = [];
+            for (let i = 0; i < 64; i++) {
+                data[i] = event.data.getUint8(i)
+            }
+            // 保留一份数据，便于后续解析处理
+            uplinkMsgArr.value = data;
+            // 格式化输出到页面
+            currentUplinkStr.value = data.map(item => {
+                return item.toString(16)
+            }).join(" ")
+        };
+        </pre>
+        </div>
+        <div>
+            <h2>3. 发送数据给设备</h2>
+            <p>以 A320 FCU CUBE 设备为例，可点击下列按钮发送示例数据，观察设备变化。</p>
+            <p>发送的是0号报告64Bytes每帧的数据。</p>
+            <div>
+                <input type="button" value="打开LCD" @click="openFcuLcd"> |
+                <input type="button" value="关闭LCD" @click="closeFcuLcd">
+            </div>
+        </div>
+        <div style="height: 500px"></div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.5.18/vue.global.prod.min.js"
+        integrity="sha512-UyWj9VA5pQrLGoqDUNeT9ciMYGkWexsNHnMQksL9eeiRQyHzD9nIHAj9JzUrbaJ8XRukAkZkQS9EKCnx/Dc8Lw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    // 使用Vue3的组合式API创建Vue应用
+    const {createApp, ref} = Vue;
+
+    const app = createApp({
+        setup() {
+            const message = ref("Hello, Vue3!");
+            const isSupportUSBHID = ref(false); // 是否支持USB HID的标识
+            const currentDevice = ref(null); // 当前连接设备对象
+            const uplinkTimestamp = ref(0); // 上行数据时间戳
+            const uplinkMsgArr = ref(null); // 上行数据数组
+            const currentUplinkStr = ref(""); // 上行数据数组
+
+            // 查询您的浏览器是否支持USB HID功能
+            if (navigator.hid !== undefined) {
+                isSupportUSBHID.value = true;
+            }
+
+            // 浏览器弹窗选择USB HID设备
+            function selectDevice() {
+                navigator.hid.requestDevice({filters: []})
+                    .then(async (selectedDevices) => {
+                        // 用户取消选择设备的处理
+                        if (selectedDevices[0] === undefined) {
+                            alert("用户已取消选择")
+                            return;
+                        }
+
+                        // 用户选择了设备的处理,，打开浏览器控制台查看对象详情
+                        let device = selectedDevices[0];
+                        console.log("已选择设备：")
+                        console.log(device)
+
+                        // 注册报告输入事件
+                        device.oninputreport = (event) => {
+                            // 记录时间戳
+                            uplinkTimestamp.value = new Date().getTime();
+                            // 读取64字节的uint8类型数据
+                            let data = [];
+                            for (let i = 0; i < 64; i++) {
+                                data[i] = event.data.getUint8(i)
+                            }
+                            // 保留一份数据，便于后续解析处理
+                            uplinkMsgArr.value = data;
+                            // 格式化输出到页面
+                            currentUplinkStr.value = data.map(item => {
+                                return item.toString(16)
+                            }).join(" ")
+                        };
+
+                        // 将设备对象传递给Vue响应式对象，便于在HTML显示设备信息
+                        currentDevice.value = device
+                        // 打开设备
+                        await device.open();
+                    });
+            }
+
+            // 打开 FCU CUBE 的 LCD 显示
+            function openFcuLcd() {
+                if (currentDevice.value && currentDevice.value.opened) {
+                    console.log(currentDevice.value)
+                    const msgArray = new Uint8Array(64);
+                    msgArray[0] = 0xF2;
+                    msgArray[1] = 0xE1;
+                    msgArray[2] = 0x03;
+
+                    msgArray[3] = 0x03;
+                    msgArray[4] = 0x01;
+                    msgArray[5] = 0x02;
+
+                    msgArray[6] = 0x01 | 0x02 | 0x20;
+                    msgArray[7] = 0;
+                    msgArray[8] = 0x02;
+                    msgArray[9] = 0x02;
+                    msgArray[10] = 0xff;
+                    msgArray[11] = 0xff;
+                    msgArray[12] = 0x03;
+                    msgArray[13] = 0x04;
+                    msgArray[14] = 0x00;
+                    msgArray[15] = 0x00;
+                    msgArray[16] = 0x00;
+                    msgArray[17] = 0x00;
+                    msgArray[18] = 0x00;
+                    msgArray[19] = 0x00;
+                    msgArray[20] = 0x00;
+                    msgArray[21] = 0x00;
+
+                    // console.log(msgArray);
+                    currentDevice.value.sendFeatureReport(0, msgArray);
+                }
+            }
+
+            // 关闭 FCU CUBE 的 LCD 显示
+            function closeFcuLcd() {
+
+            }
+
+            return {
+                message,
+                isSupportUSBHID,
+                currentDevice,
+                currentUplinkStr,
+                uplinkTimestamp,
+                selectDevice,
+                openFcuLcd,
+                closeFcuLcd,
+            };
+        }
+    });
+
+    // 挂载Vue应用到HTML中的元素
+    app.mount("#app");
+</script>
+</body>
+</html>
