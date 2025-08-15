@@ -24,14 +24,18 @@
             flex-direction: column;
             align-content: flex-start;
             flex-wrap: wrap;
+            max-width: 1000px;
+        }
+        .logo {
+            object-fit: contain;
+            margin: 0 auto;
         }
     </style>
 </head>
 <body>
 <div id="app" v-cloak>
     <div class="container">
-
-        <img src="./static/logo.png" alt="Logo"/>
+        <img src="../static/logo.png" alt="Logo" class="logo"/>
         <h1>USB HID 连接示例（JavaScript）</h1>
         <p>GitHub：<a href="https://github.com/wingflexsim/DevDocument">https://github.com/wingflexsim/DevDocument</a>
         </p>
@@ -50,12 +54,12 @@
         </div>
         <div>
             <h2>1. 选择设备</h2>
-            选择 WINGFLEX 开头的设备。
+            请选择 WINGFLEX 开头的设备。连接前确保关闭了 WINGFLEX Bridge 桥接软件，避免冲突。
             <p>（受浏览器安全性限制，必须通过用户主动操作，例如点击按钮，才能唤起选择设备的对话框。）</p>
             <input type="button" value="点此选择设备" @click="selectDevice"/>
             <p>
                 当前选择的设备：{{
-                    currentDevice ? `${currentDevice.productName}(VID: PID:${currentDevice.vendorId}, PID: ${currentDevice.productId})` : "未选择"
+                    currentDevice ? `${currentDevice.productName}(VID: ${currentDevice.vendorId}, PID: ${currentDevice.productId})` : "未选择"
                 }}</p>
             <p>示例代码：</p>
             <pre>
@@ -81,44 +85,101 @@
         </div>
         <div>
             <h2>2. 注册报告输入事件</h2>
+            <p>在Web USB HID开发中，可以注册 <code>HidDevice</code> 的 <code>oninputreport</code> 事件，来获得设备向电脑发送的数据。
+            </p>
+            <p>连接设备后，你可以按下AP1和AP2按键进行测试。</p>
+            <p>AP1按键：{{AP1Switch?"按下":"未按下"}} | AP2按键：{{ AP2Switch ? "按下" : "未按下"}} </p>
             <p>时间戳：<code>{{ uplinkTimestamp }} ms</code></p>
             <p>设备上行实时数据：<code>{{ currentUplinkStr }}</code></p>
             <p>示例代码：</p>
             <pre>
+        // 注册报告输入事件
         device.oninputreport = (event) => {
             // 记录时间戳
             uplinkTimestamp.value = new Date().getTime();
             // 读取64字节的uint8类型数据
             let data = [];
             for (let i = 0; i < 64; i++) {
-                data[i] = event.data.getUint8(i)
+                data[i] = event.data.getUint8(i);
             }
+            AP1Switch.value = !!(data[7] & 0x20);
+            AP2Switch.value = !!(data[7] & 0x40);
+
             // 保留一份数据，便于后续解析处理
             uplinkMsgArr.value = data;
             // 格式化输出到页面
             currentUplinkStr.value = data.map(item => {
-                return item.toString(16)
-            }).join(" ")
+                return item.toString(16);
+            }).join(" ");
         };
         </pre>
         </div>
         <div>
             <h2>3. 发送数据给设备</h2>
             <p>以 A320 FCU CUBE 设备为例，可点击下列按钮发送示例数据，观察设备变化。</p>
-            <p>发送的是0号报告64Bytes每帧的数据。</p>
+            <p>这将会发送0号报告的64Bytes每帧的数据到设备上。由于数据断连检测的存在，设备会在1-3秒内关闭灯光。</p>
             <div>
-                <input type="button" value="打开LCD" @click="openFcuLcd"> |
-                <input type="button" value="关闭LCD" @click="closeFcuLcd">
+                <input type="button" value="打开灯光" @click="openFcuLight">
             </div>
+            <p>示例代码</p>
+            <pre>
+        // 打开 FCU CUBE 的灯光
+        function openFcuLight() {
+            if (currentDevice.value && currentDevice.value.opened) {
+                console.log(currentDevice.value);
+                // 64 Bytes Uint8 数组
+                const msgArray = new Uint8Array(64);
+                msgArray[0] = 0xF2;
+                msgArray[1] = 0xE1;
+                msgArray[2] = 0x03;
+
+                msgArray[3] = 0x03;
+                msgArray[4] = 0x01;
+                msgArray[5] = 0x02;
+
+                msgArray[6] = 0xff;
+                msgArray[7] = 0x00;
+                msgArray[8] = 0x01;
+
+                msgArray[9] = 0x02;
+                msgArray[10] = 0x02;
+                msgArray[11] = 0xff;
+                msgArray[12] = 0xff;
+
+                msgArray[13] = 0x03;
+                msgArray[14] = 0x08;
+                msgArray[15] = 0x00;
+                msgArray[16] = 0x00;
+                msgArray[17] = 0x00;
+                msgArray[18] = 0x00;
+                msgArray[19] = 0x00;
+                msgArray[20] = 0x00;
+                msgArray[21] = 0x00;
+                msgArray[22] = 0x00;
+                console.log(msgArray);
+
+                // 以0号报告发送数据到设备
+                currentDevice.value.sendFeatureReport(0, msgArray);
+            }
+        }
+            </pre>
         </div>
-        <div style="height: 500px"></div>
+        <div>
+            <h2>4. 进一步了解协议细节</h2>
+            <p>你可以继续访问 A320 FCU CUBE 文档来获得协议的详细解释。</p>
+            <p>你也可以查看本HTML页面源代码了解完整通讯过程。</p>
+        </div>
+        <div>
+            &copy;WINGFLEX 2025
+        </div>
+        <div style="height: 250px"></div>
     </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.5.18/vue.global.prod.min.js"
         integrity="sha512-UyWj9VA5pQrLGoqDUNeT9ciMYGkWexsNHnMQksL9eeiRQyHzD9nIHAj9JzUrbaJ8XRukAkZkQS9EKCnx/Dc8Lw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-    // 使用Vue3的组合式API创建Vue应用
+    // 使用 Vue3 的组合式 API 创建 Vue 应用
     const {createApp, ref} = Vue;
 
     const app = createApp({
@@ -129,6 +190,8 @@
             const uplinkTimestamp = ref(0); // 上行数据时间戳
             const uplinkMsgArr = ref(null); // 上行数据数组
             const currentUplinkStr = ref(""); // 上行数据数组
+            const AP1Switch = ref(false); // AP1按键状态
+            const AP2Switch = ref(false); // AP2按键状态
 
             // 查询您的浏览器是否支持USB HID功能
             if (navigator.hid !== undefined) {
@@ -137,18 +200,26 @@
 
             // 浏览器弹窗选择USB HID设备
             function selectDevice() {
-                navigator.hid.requestDevice({filters: []})
+                navigator.hid.requestDevice({
+                    filters: [
+                        {
+                            // FCU CUBE
+                            vendorId: 0xA316,
+                            productId: 0xC787,
+                        }
+                    ]
+                })
                     .then(async (selectedDevices) => {
                         // 用户取消选择设备的处理
                         if (selectedDevices[0] === undefined) {
-                            alert("用户已取消选择")
+                            alert("用户已取消选择");
                             return;
                         }
 
                         // 用户选择了设备的处理,，打开浏览器控制台查看对象详情
                         let device = selectedDevices[0];
-                        console.log("已选择设备：")
-                        console.log(device)
+                        console.log("已选择设备：");
+                        console.log(device);
 
                         // 注册报告输入事件
                         device.oninputreport = (event) => {
@@ -157,27 +228,31 @@
                             // 读取64字节的uint8类型数据
                             let data = [];
                             for (let i = 0; i < 64; i++) {
-                                data[i] = event.data.getUint8(i)
+                                data[i] = event.data.getUint8(i);
                             }
+                            AP1Switch.value = !!(data[7] & 0x20);
+                            AP2Switch.value = !!(data[7] & 0x40);
+
                             // 保留一份数据，便于后续解析处理
                             uplinkMsgArr.value = data;
                             // 格式化输出到页面
                             currentUplinkStr.value = data.map(item => {
-                                return item.toString(16)
-                            }).join(" ")
+                                return item.toString(16);
+                            }).join(" ");
                         };
 
-                        // 将设备对象传递给Vue响应式对象，便于在HTML显示设备信息
-                        currentDevice.value = device
+                        // 将设备对象传递给 Vue 响应式对象，便于在HTML显示设备信息
+                        currentDevice.value = device;
                         // 打开设备
                         await device.open();
                     });
             }
 
-            // 打开 FCU CUBE 的 LCD 显示
-            function openFcuLcd() {
+            // 打开 FCU CUBE 的灯光
+            function openFcuLight() {
                 if (currentDevice.value && currentDevice.value.opened) {
-                    console.log(currentDevice.value)
+                    console.log(currentDevice.value);
+                    // 64 Bytes Uint8 数组
                     const msgArray = new Uint8Array(64);
                     msgArray[0] = 0xF2;
                     msgArray[1] = 0xE1;
@@ -187,15 +262,17 @@
                     msgArray[4] = 0x01;
                     msgArray[5] = 0x02;
 
-                    msgArray[6] = 0x01 | 0x02 | 0x20;
-                    msgArray[7] = 0;
-                    msgArray[8] = 0x02;
+                    msgArray[6] = 0xff;
+                    msgArray[7] = 0x00;
+                    msgArray[8] = 0x01;
+
                     msgArray[9] = 0x02;
-                    msgArray[10] = 0xff;
+                    msgArray[10] = 0x02;
                     msgArray[11] = 0xff;
-                    msgArray[12] = 0x03;
-                    msgArray[13] = 0x04;
-                    msgArray[14] = 0x00;
+                    msgArray[12] = 0xff;
+
+                    msgArray[13] = 0x03;
+                    msgArray[14] = 0x08;
                     msgArray[15] = 0x00;
                     msgArray[16] = 0x00;
                     msgArray[17] = 0x00;
@@ -203,15 +280,12 @@
                     msgArray[19] = 0x00;
                     msgArray[20] = 0x00;
                     msgArray[21] = 0x00;
+                    msgArray[22] = 0x00;
+                    console.log(msgArray);
 
-                    // console.log(msgArray);
+                    // 以0号报告发送数据到设备
                     currentDevice.value.sendFeatureReport(0, msgArray);
                 }
-            }
-
-            // 关闭 FCU CUBE 的 LCD 显示
-            function closeFcuLcd() {
-
             }
 
             return {
@@ -220,14 +294,15 @@
                 currentDevice,
                 currentUplinkStr,
                 uplinkTimestamp,
+                AP1Switch,
+                AP2Switch,
                 selectDevice,
-                openFcuLcd,
-                closeFcuLcd,
+                openFcuLight,
             };
         }
     });
 
-    // 挂载Vue应用到HTML中的元素
+    // 挂载 Vue 应用到 HTML 中的元素
     app.mount("#app");
 </script>
 </body>

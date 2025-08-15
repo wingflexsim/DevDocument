@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>USB HID Connection Example</title>
+    <style>
+        [v-cloak] {
+            visibility: hidden;
+        }
+
+        pre, code {
+            font-family: Consolas, serif;
+        }
+
+        #app {
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            flex-wrap: wrap;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-content: flex-start;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+<div id="app" v-cloak>
+    <div class="container">
+
+        <img src="../static/logo.png" alt="Logo"/>
+        <h1>USB HID Connection Example (JavaScript)</h1>
+        <p>GitHub: <a href="https://github.com/wingflexsim/DevDocument">https://github.com/wingflexsim/DevDocument</a>
+        </p>
+        <p>Official Website: <a href="https://wingflexsim.com/">https://wingflexsim.com/</a></p>
+        <p>It is recommended that you read the HTML source code of this example page to understand the implementation details.</p>
+        <div>
+            <h2>0. Check if your browser supports USB HID functionality: {{ isSupportUSBHID ? "Supported" : "Not Supported" }}</h2>
+            <p>(If it indicates not supported, please use modern browsers such as Chrome or Edge.)</p>
+            <p>Sample code:</p>
+            <pre>
+        if(navigator.hid !== undefined){
+            // If the condition is met, it is supported
+            isSupportUSBHID.value = true;
+        }
+        </pre>
+        </div>
+        <div>
+            <h2>1. Select a Device</h2>
+            Please select a device starting with WINGFLEX. Before connecting, make sure to close the WINGFLEX Bridge software to avoid conflicts.
+            <p>(Due to browser security restrictions, you must initiate the device selection dialog through a user action, such as clicking a button.)</p>
+            <input type="button" value="Click here to select a device" @click="selectDevice"/>
+            <p>
+                Currently selected device: {{
+                    currentDevice ? `${currentDevice.productName}(VID: ${currentDevice.vendorId}, PID: ${currentDevice.productId})` : "Not Selected"
+                }}</p>
+            <p>Sample code:</p>
+            <pre>
+        function selectDevice() {
+            navigator.hid.requestDevice({filters: []})
+                .then(async (selectedDevices) => {
+                    // Handling when the user cancels device selection
+                    if (selectedDevices[0] === undefined) {
+                        alert("User has canceled the selection")
+                        return;
+                    }
+
+                    // Handling when the user selects a device, open the browser console to view the object details
+                    let device = selectedDevices[0];
+                    console.log("Selected device:")
+                    console.log(device)
+
+                    // Pass the device object to the Vue reactive object for easy display of device information in HTML
+                    currentDevice.value = device
+                });
+        }
+        </pre>
+        </div>
+        <div>
+            <h2>2. Register Input Report Event</h2>
+            <p>In Web USB HID development, you can register to the <code>HidDevice</code>'s <code>oninputreport</code> event to receive data sent from the device to the computer.
+            </p>
+            <p>Timestamp: <code>{{ uplinkTimestamp }} ms</code></p>
+            <p>Device uplink real-time data: <code>{{ currentUplinkStr }}</code></p>
+            <p>Sample code:</p>
+            <pre>
+        device.oninputreport = (event) => {
+            // Record timestamp
+            uplinkTimestamp.value = new Date().getTime();
+            // Read 64 bytes of uint8 type data
+            let data = [];
+            for (let i = 0; i < 64; i++) {
+                data[i] = event.data.getUint8(i)
+            }
+            // Keep a copy of the data for subsequent parsing and processing
+            uplinkMsgArr.value = data;
+            // Format and output to the page
+            currentUplinkStr.value = data.map(item => {
+                return item.toString(16)
+            }).join(" ")
+        };
+        </pre>
+        </div>
+        <div>
+            <h2>3. Send Data to the Device</h2>
+            <p>Take the A320 FCU CUBE device as an example. You can click the following button to send sample data and observe the device changes.</p>
+            <p>This will send 64 Bytes of data per frame of report 0 to the device. Due to the presence of disconnection detection, the device will turn off the lights within 1 - 3 seconds.</p>
+            <div>
+                <input type="button" value="Turn on the Lights" @click="openFcuLight">
+            </div>
+        </div>
+        <div>
+            <h2>4. Learn More About Protocol Details</h2>
+            <p>You can continue to visit the A320 FCU CUBE documentation to get a detailed explanation of the protocol.</p>
+            <p>You can also view the HTML page source code of this page to understand the complete communication process.</p>
+        </div>
+        <div>
+            &copy;WINGFLEX 2025
+        </div>
+        <div style="height: 250px"></div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.5.18/vue.global.prod.min.js"
+        integrity="sha512-UyWj9VA5pQrLGoqDUNeT9ciMYGkWexsNHnMQksL9eeiRQyHzD9nIHAj9JzUrbaJ8XRukAkZkQS9EKCnx/Dc8Lw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    // Use Vue3's Composition API to create a Vue application
+    const {createApp, ref} = Vue;
+
+    const app = createApp({
+        setup() {
+            const message = ref("Hello, Vue3!");
+            const isSupportUSBHID = ref(false); // Flag indicating whether USB HID is supported
+            const currentDevice = ref(null); // Current connected device object
+            const uplinkTimestamp = ref(0); // Uplink data timestamp
+            const uplinkMsgArr = ref(null); // Uplink data array
+            const currentUplinkStr = ref(""); // Uplink data string
+            const AP1Switch = ref(false); // AP1 button state
+            const AP2Switch = ref(false); // AP2 button state
+
+            // Check if your browser supports USB HID functionality
+            if (navigator.hid !== undefined) {
+                isSupportUSBHID.value = true;
+            }
+
+            // Browser popup to select a USB HID device
+            function selectDevice() {
+                navigator.hid.requestDevice({
+                    filters: [
+                        {
+                            // FCU CUBE
+                            vendorId: 0xA316,
+                            productId: 0xC787,
+                        }
+                    ]
+                })
+                    .then(async (selectedDevices) => {
+                        // Handling when the user cancels device selection
+                        if (selectedDevices[0] === undefined) {
+                            alert("User has canceled the selection");
+                            return;
+                        }
+
+                        // Handling when the user selects a device, open the browser console to view the object details
+                        let device = selectedDevices[0];
+                        console.log("Selected device:");
+                        console.log(device);
+
+                        // Register the input report event
+                        device.oninputreport = (event) => {
+                            // Record timestamp
+                            uplinkTimestamp.value = new Date().getTime();
+                            // Read 64 bytes of uint8 type data
+                            let data = [];
+                            for (let i = 0; i < 64; i++) {
+                                data[i] = event.data.getUint8(i);
+                            }
+                            AP1Switch.value = !!(data[7] & 0x20);
+                            AP2Switch.value = !!(data[7] & 0x40);
+
+                            // Keep a copy of the data for subsequent parsing and processing
+                            uplinkMsgArr.value = data;
+                            // Format and output to the page
+                            currentUplinkStr.value = data.map(item => {
+                                return item.toString(16);
+                            }).join(" ");
+                        };
+
+                        // Pass the device object to the Vue reactive object for easy display of device information in HTML
+                        currentDevice.value = device;
+                        // Open the device
+                        await device.open();
+                    });
+            }
+
+            // Turn on the lights of the FCU CUBE
+            function openFcuLight() {
+                if (currentDevice.value && currentDevice.value.opened) {
+                    console.log(currentDevice.value);
+                    // 64 Bytes Uint8 array
+                    const msgArray = new Uint8Array(64);
+                    msgArray[0] = 0xF2;
+                    msgArray[1] = 0xE1;
+                    msgArray[2] = 0x03;
+
+                    msgArray[3] = 0x03;
+                    msgArray[4] = 0x01;
+                    msgArray[5] = 0x02;
+
+                    msgArray[6] = 0xff;
+                    msgArray[7] = 0x00;
+                    msgArray[8] = 0x01;
+
+                    msgArray[9] = 0x02;
+                    msgArray[10] = 0x02;
+                    msgArray[11] = 0xff;
+                    msgArray[12] = 0xff;
+
+                    msgArray[13] = 0x03;
+                    msgArray[14] = 0x08;
+                    msgArray[15] = 0x00;
+                    msgArray[16] = 0x00;
+                    msgArray[17] = 0x00;
+                    msgArray[18] = 0x00;
+                    msgArray[19] = 0x00;
+                    msgArray[20] = 0x00;
+                    msgArray[21] = 0x00;
+                    msgArray[22] = 0x00;
+                    console.log(msgArray);
+
+                    // Send data to the device via report 0
+                    currentDevice.value.sendFeatureReport(0, msgArray);
+                }
+            }
+
+            return {
+                message,
+                isSupportUSBHID,
+                currentDevice,
+                currentUplinkStr,
+                uplinkTimestamp,
+                AP1Switch,
+                AP2Switch,
+                selectDevice,
+                openFcuLight,
+            };
+        }
+    });
+
+    // Mount the Vue application to the element in the HTML
+    app.mount("#app");
+</script>
+</body>
+</html>

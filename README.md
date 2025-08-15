@@ -21,7 +21,7 @@ Once you understand the integration method, you can extend support to virtually 
 
 Currently supported devices:
 
-- FCU CUBE
+- A320 FCU CUBE
 
 Integration documentation for other devices is under development and testing.
 
