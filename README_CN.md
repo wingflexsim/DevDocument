@@ -1,4 +1,4 @@
-English | 中文
+[English](https://github.com/wingflexsim/DevDocument/blob/master/README.md) | [中文](https://github.com/wingflexsim/DevDocument/blob/master/README_CN.md)
 
 # WINGFLEXSIM 设备接入开发文档
 

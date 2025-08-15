@@ -1,30 +1,33 @@
-English | 中文
+[English](https://github.com/wingflexsim/DevDocument/blob/master/README.md) | [中文](https://github.com/wingflexsim/DevDocument/blob/master/README_CN.md)
 
 # WINGFLEXSIM Device Integration Development Documentation
 
-Official Website: https://wingflexsim.com/  
+Official Website: https://wingflexsim.com/
+
 GitHub: https://github.com/wingflexsim/DevDocument
 
-To support a broader ecosystem of devices, we are releasing the **WINGFLEXSIM Device Integration Development Documentation**. This document is intended to help community developers, hardware vendors, and enthusiasts integrate device functionality in their preferred way, enabling compatibility with more gaming platforms and simulator models.
+To enable our products to support more ecosystems, we have decided to release the "WINGFLEXSIM Device Integration Development Documentation" to help community developers, suppliers, and enthusiasts integrate device functionalities in their preferred way, enabling compatibility with more gaming platforms and hardware models.
 
 ## Disclaimer
-1. This documentation is provided for **non-official developers** to integrate WINGFLEXSIM flight simulation devices. You may use it for **non-commercial purposes**, such as controlling WINGFLEXSIM devices within your own software or connection tools.
-2. Integrating WINGFLEXSIM devices does **not** imply official endorsement or commercial licensing from WINGFLEXSIM. You **must not** claim any official partnership or affiliation with WINGFLEXSIM without authorization.
-3. WINGFLEXSIM **assumes no liability** for any issues arising from the use of this documentation, including but not limited to: device damage, malfunction, unstable connections, game lag, or application crashes caused by your software.
-4. Due to international collaboration, errors in editing, translation, or content may occur. WINGFLEXSIM is not responsible for integration issues resulting from such errors. If you find any mistakes in the documentation, please report them via the project's [Issues](https://github.com/wingflexsim/DevDocument/issues).
+1. This documentation is provided for unofficial developers to integrate WINGFLEXSIM flight simulation gaming devices. It allows individuals or communities to integrate device functionalities for non-commercial purposes, such as operating WINGFLEXSIM devices in your developed connection software.
+2. Integrating WINGFLEXSIM devices does not imply official support or commercial authorization from WINGFLEXSIM. Therefore, you must not claim any partnership with WINGFLEXSIM without authorization.
+3. WINGFLEXSIM will not be responsible for any issues arising from your software development during integration, including but not limited to: device damage, functional abnormalities, unstable connections, game lag, or game crashes.
+4. Due to international collaboration, documentation errors, content inaccuracies, or translation mistakes may occur. WINGFLEXSIM will not be responsible for any related integration issues.
+5. If you find any errors in our documentation, please provide feedback via the project's [Issues](https://github.com/wingflexsim/DevDocument/issues).
 
-## Overview
+## Introduction
 
-The **WINGFLEXSIM Device Integration Development Documentation** helps you integrate WINGFLEXSIM devices into your own software. To accommodate developers using different programming languages, we currently provide **JavaScript sample code**. You can easily write and test integration code in HTML and verify it directly in your browser.
+The "WINGFLEXSIM Device Integration Development Documentation" helps you integrate WINGFLEXSIM devices into your software. To facilitate developers using their preferred programming languages, we currently provide example code in JavaScript. You can easily write test code in HTML and verify the integration effects in a browser.
 
-Once you understand the integration method, you can extend support to virtually any programming language or framework, and integrate it into any connection software or platform.
+After understanding the integration methods, you can use almost any language or framework to integrate WINGFLEXSIM devices into any connection software.
 
-Currently supported devices:
+Currently, we provide integration documentation for the following devices:
 
 - A320 FCU CUBE
 
-Integration documentation for other devices is under development and testing.
+Documentation for other devices is still being edited and tested.
 
-## Integration Documentation
+## Documentation Index
 
-[FCU CUBE]()
+- [Basic Section]()
+- [A320 FCU CUBE]()
