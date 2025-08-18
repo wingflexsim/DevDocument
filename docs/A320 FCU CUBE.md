@@ -58,14 +58,6 @@ So that, this value is in Two's Complement.
 **About Light Brightness:**
 Those value is controlled by two rotary under the FCU CUBE.
 
-**About Knob Rotate Definition:**
-Signed values determine rotation direction, with the magnitude representing the rotating count.
-So that, this value is in Two's Complement.
-
-**About Light Brightness:**
-Those value is controlled by two rotary under the FCU CUBE. 
-
-
 ## Downlink Data
 
 The computer send to the device.
