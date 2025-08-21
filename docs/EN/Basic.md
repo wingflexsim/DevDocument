@@ -21,8 +21,8 @@ Each device has defined uplink and downlink data.
 Let `Uint8 Bytes[64]` be the array for uplink data. The data structure of uplink data is as follows:
 
 - `Bytes[0]-[2]`: Fixed message header bytes of the device, with a length of 3 bytes. The specific values are defined in the protocol of each device.
-- `Bytes[3]`: How many types of data are included in this data transmission.
-  - In the protocol documentation, this is referred to as "Data Type".
+- `Bytes[3]`: Type total declaration byte. How many types of data are included in this data transmission.
+  - In the protocol documentation, this is referred to as "Data Type Total".
   - There can be up to 3 different types. If this transmission contains 1 type of data, the value is 0x01; if it contains 3 types, the value is 0x03. A single transmission can consist of bit-type, single-byte type, and double-byte type data.
 - `Bytes[4]`: Type declaration byte, indicating the data type of the following bytes.
   - In the protocol documentation, this is referred to as "Data Type". If this transmission contains 3 types of data, this "Data Type" declaration byte will appear three times.
