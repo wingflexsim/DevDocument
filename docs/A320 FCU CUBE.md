@@ -17,7 +17,7 @@ The device send to the computer.
 | Head                        | Constant: 0x03                  |      |   2    |   -   |  0x03   |
 | Data Type Total             | Has 2 Data Type                 |      |   3    |   -   |  0x02   |
 | Data Type                   | Bit Type                        |      |   4    |   -   |  0x01   |
-| Data Length                 | Following data occupies 2 Bytes |      |   5    |   -   |  0x02   |
+| Data Length                 | Following data occupies 3 Bytes |      |   5    |   -   |  0x03   |
 | SPD MACH Switch             | Press:1, Release: 0             | 0x01 |   6    |   0   |    1    |
 | SPD Knob Push               | Push: 1, Release: 0             | 0x02 |   6    |   1   |    1    |
 | SPD Knob Pull               | Pull: 1, Release: 0             | 0x04 |   6    |   2   |    1    |
@@ -69,7 +69,7 @@ The computer send to the device.
 | Head                        | Constant: 0x03                     |      |   2    |   -   |  0x03   |
 | Data Type Total             | Has 3 Data Type                    |      |   3    |   -   |  0x02   |
 | Data Type                   | Bit Type                           |      |   4    |   -   |  0x01   |
-| Data Length                 | Following data occupies 3 Bytes    |      |   5    |   -   |  0x02   |
+| Data Length                 | Following data occupies 3 Bytes    |      |   5    |   -   |  0x03   |
 | LOC Signal                  | On:1, Off: 0                       | 0x01 |   6    |   0   |    1    |
 | AP1 Signal                  | On:1, Off: 0                       | 0x02 |   6    |   1   |    1    |
 | AP2 Signal                  | On:1, Off: 0                       | 0x04 |   6    |   2   |    1    |
