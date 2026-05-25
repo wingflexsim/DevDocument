@@ -6,7 +6,7 @@ This is the first product to fully support a universal control protocol. Key fea
 1. Supports direct in-game key/axis data binding.
 2. Supports rapid integration and development in virtually all programming languages.
 3. INPUT reports are only sent when data changes.
-4. OUTPUT reports only need to be sent once within a 10-second window to maintain device state.
+4. OUTPUT reports only need to be sent once within a 60-second window to maintain device light state.
 
 ## Design Specifications
 
