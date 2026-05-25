@@ -76,7 +76,7 @@ Byte 3: [Reserved][Reserved][Reserved][Reserved][ALT][VS][VNAV][IAS]
 
 ### 报告总长度
 
-5 字节
+64 字节
 
 ### 报告描述
 
@@ -100,6 +100,7 @@ Byte 3: [Reserved][Reserved][Reserved][Reserved][ALT][VS][VNAV][IAS]
 | 3    | ALT LED              | uint8_t | Bit 3   | ALT 箭头指示灯                  |
 | 3    | Reserved             | uint8_t | Bit 4-7 | (保留)                       |
 | 4    | Backlight Brightness | uint8_t | -       | 背光亮度(值: 0-255)             |
+| 5~63 | Reserved             | uint8_t | -       | (保留)                       |
 
 ### 结构示意图
 
@@ -109,4 +110,5 @@ Byte 1:  [Method]
 Byte 2:  [YD][LVL][FD][AP][HDG][TRK][NAV][APR]
 Byte 3:  [Reserved][Reserved][Reserved][Reserved][ALT][VS][VNAV][IAS]
 Byte 4:  [Backlight Brightness]
+Byte 5~63:  [Reserved]
 ```

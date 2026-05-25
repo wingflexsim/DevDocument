@@ -76,7 +76,7 @@ Data flow: Computer to Device.
 
 ### Total Report Length
 
-5 bytes
+64 bytes
 
 ### Report Description
 
@@ -100,6 +100,7 @@ Arrow indicator LEDs: ON value = 1, OFF value = 0.
 | 3          | ALT LED              | uint8_t   | Bit 3     | ALT arrow indicator LED                                                       |
 | 3          | Reserved             | uint8_t   | Bit 4-7   | (Reserved)                                                                    |
 | 4          | Backlight Brightness | uint8_t   | -         | Backlight brightness (value: 0-255)                                           |
+| 5~63       | Reserved             | uint8_t   | -         | (Reserved)                                                                    |
 
 ### Structure Diagram
 
@@ -109,6 +110,7 @@ Byte 1:  [Method]
 Byte 2:  [YD][LVL][FD][AP][HDG][TRK][NAV][APR]
 Byte 3:  [Reserved][Reserved][Reserved][Reserved][ALT][VS][VNAV][IAS]
 Byte 4:  [Backlight Brightness]
+Byte 5~63:  [Reserved]
 ```
 
 ---
