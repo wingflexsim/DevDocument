@@ -215,7 +215,7 @@ Byte 4: [FW Version Patch]
 
 ## Feature GET_REPORT id = 4
 
-**REPORT_ID = 4
+**REPORT_ID = 4**
 
 ### 报告总长度
 
