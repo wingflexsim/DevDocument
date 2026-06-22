@@ -179,7 +179,7 @@ The device send to the computer.
 | RAIN RPLNT          | Press: 1, Release: 0             | 0x40 |   25   |   6   |    0    |
 | (Reserved)          | -                                | 0x80 |   25   |   7   |    0    |
 | Data Type           | Single Byte Type                 | -    |   26   |   -   |  0x02   |
-| Data Length         | Following data occupies 6 Bytes  | -    |   27   |   -   |  0x01   |
+| Data Length         | Following data occupies 1 Byte   | -    |   27   |   -   |  0x01   |
 | OVHD INTEG LT       | 0x00-0xFF(255)                   | -    |   28   |   -   |    0    |
 
 **About Knob Rotate Definition:**
@@ -278,15 +278,14 @@ The computer send to the device.
 | (Reserved)                  |                                  | 0x20 |   15   |   5   |    0    |
 | (Reserved)                  |                                  | 0x40 |   15   |   6   |    0    |
 | (Reserved)                  |                                  | 0x80 |   15   |   7   |    0    |
-| Data Type                   | Single Byte Type                 | -    |   9    |   -   |  0x02   |
-| Data Length                 | Following data occupies 3 Bytes  | -    |   10   |   -   |  0x03   |
-| Background Light Brightness | 0x00(Minimum)-0xFF(Maximum)      | -    |   11   |   -   |    0    |
-| VOLT LIGHT Left Brightness  | 0x00(Minimum)-0xFF(Maximum)      | -    |   12   |   -   |    0    |
-| VOLT LIGHT Right Brightness | 0x00(Minimum)-0xFF(Maximum)      | -    |   12   |   -   |    0    |
-| Data Type                   | Double Byte Type                 | -    |   13   |   -   |  0x03   |
-| Data Length                 | Following data occupies 8 Bytes  | -    |   14   |   -   |  0x04   |
-| VOLT DISPLAY VALUE L        | High 8 bit of Uint16             | -    |   15   |   -   |  0x00   |
-| VOLT DISPLAY VALUE L        | Low 8 bit of Uint16              | -    |   16   |   -   |  0x00   |
-| VOLT DISPLAY VALUE R        | High 8 bit of Uint16             | -    |   17   |   -   |  0x00   |
-| VOLT DISPLAY VALUE R        | Low 8 bit of Uint16              | -    |   18   |   -   |  0x00   |
-
+| Data Type                   | Single Byte Type                 | -    |   16   |   -   |  0x02   |
+| Data Length                 | Following data occupies 3 Bytes  | -    |   17   |   -   |  0x03   |
+| Background Light Brightness | 0x00(Minimum)-0xFF(Maximum)      | -    |   18   |   -   |    0    |
+| VOLT LIGHT Left Brightness  | 0x00(Minimum)-0xFF(Maximum)      | -    |   19   |   -   |    0    |
+| VOLT LIGHT Right Brightness | 0x00(Minimum)-0xFF(Maximum)      | -    |   20   |   -   |    0    |
+| Data Type                   | Double Byte Type                 | -    |   21   |   -   |  0x03   |
+| Data Length                 | Following data occupies 4 Bytes  | -    |   22   |   -   |  0x04   |
+| VOLT DISPLAY VALUE L        | High 8 bit of Uint16             | -    |   23   |   -   |  0x00   |
+| VOLT DISPLAY VALUE L        | Low 8 bit of Uint16              | -    |   24   |   -   |  0x00   |
+| VOLT DISPLAY VALUE R        | High 8 bit of Uint16             | -    |   25   |   -   |  0x00   |
+| VOLT DISPLAY VALUE R        | Low 8 bit of Uint16              | -    |   26   |   -   |  0x00   |
