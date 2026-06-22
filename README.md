@@ -1,33 +1,57 @@
-[English](https://github.com/wingflexsim/DevDocument/blob/master/README.md) | [中文](https://github.com/wingflexsim/DevDocument/blob/master/README_CN.md)
+[English](README.md) | [中文](README_CN.md)
 
-# WINGFLEXSIM Device Integration Development Documentation
+# WINGFLEXSIM Device Integration Documentation
 
-Official Website: https://wingflexsim.com/
+Documentation and examples for integrating WINGFLEXSIM flight-simulation hardware with third-party software.
 
-GitHub: https://github.com/wingflexsim/DevDocument
+- [Official website](https://wingflexsim.com/)
+- [Report a documentation issue](https://github.com/wingflexsim/DevDocument/issues)
 
-To enable our products to support more ecosystems, we have decided to release the "WINGFLEXSIM Device Integration Development Documentation" to help community developers, suppliers, and enthusiasts integrate device functionalities in their preferred way, enabling compatibility with more gaming platforms and hardware models.
+## Overview
+
+This repository describes how supported WINGFLEXSIM devices communicate over USB HID. It is intended for community developers, hardware suppliers, and enthusiasts who want to add WINGFLEXSIM device support to flight-simulation software or other connection tools.
+
+The included examples use JavaScript and HTML so that communication can be tested directly in a compatible browser. Once you understand the protocol, you can implement it in any language or framework with USB HID support.
+
+## Getting Started
+
+1. Read the [communication basics](docs/EN/Basic.md) to understand reports, frame sizes, and uplink/downlink data.
+2. Open the protocol document for your device.
+3. Review the files in [`examples/`](examples/) for a working JavaScript/HTML reference.
+4. Adapt the protocol to your application and preferred programming language.
+
+## Supported Device Documentation
+
+| Device | Documentation |
+| --- | --- |
+| A320 EFIS CUBE | [Protocol](docs/A320%20EFIS%20CUBE.md) |
+| A320 FCU CUBE | [Protocol](docs/A320%20FCU%20CUBE.md) |
+| A320 OVHD CUBE | [Protocol](docs/A320%20OVHD%20CUBE.md) |
+| A320 RMP CUBE | [Protocol](docs/A320%20RMP%20CUBE.md) |
+| DAP 500 | [English](docs/DAP%20500_EN.md) · [中文](docs/DAP%20500_CN.md) |
+
+Additional device documentation may be added as protocols are edited and tested.
+
+## Repository Structure
+
+```text
+.
+├── docs/
+│   ├── EN/          # English general documentation
+│   ├── CN/          # Chinese general documentation
+│   └── ...          # Device protocol documents
+├── examples/        # Browser-based USB HID examples
+├── README.md        # English overview
+└── README_CN.md     # Chinese overview
+```
+
+## Contributing
+
+If you find an error, ambiguity, or translation issue, please [open an issue](https://github.com/wingflexsim/DevDocument/issues). When reporting a protocol problem, include the device model, the relevant field or byte position, the expected behavior, and the behavior you observed.
 
 ## Disclaimer
-1. This documentation is provided for unofficial developers to integrate WINGFLEXSIM flight simulation gaming devices. It allows individuals or communities to integrate device functionalities for non-commercial purposes, such as operating WINGFLEXSIM devices in your developed connection software.
-2. Integrating WINGFLEXSIM devices does not imply official support or commercial authorization from WINGFLEXSIM. Therefore, you must not claim any partnership with WINGFLEXSIM without authorization.
-3. WINGFLEXSIM will not be responsible for any issues arising from your software development during integration, including but not limited to: device damage, functional abnormalities, unstable connections, game lag, or game crashes.
-4. Due to international collaboration, documentation errors, content inaccuracies, or translation mistakes may occur. WINGFLEXSIM will not be responsible for any related integration issues.
-5. If you find any errors in our documentation, please provide feedback via the project's [Issues](https://github.com/wingflexsim/DevDocument/issues).
 
-## Introduction
-
-The "WINGFLEXSIM Device Integration Development Documentation" helps you integrate WINGFLEXSIM devices into your software. To facilitate developers using their preferred programming languages, we currently provide example code in JavaScript. You can easily write test code in HTML and verify the integration effects in a browser.
-
-After understanding the integration methods, you can use almost any language or framework to integrate WINGFLEXSIM devices into any connection software.
-
-Currently, we provide integration documentation for the following devices:
-
-- A320 FCU CUBE
-
-Documentation for other devices is still being edited and tested.
-
-## Documentation Index
-
-- [Basic Section](https://github.com/wingflexsim/DevDocument/blob/master/docs/EN/Basic.md)
-- [A320 FCU CUBE](https://github.com/wingflexsim/DevDocument/blob/master/docs/A320%20FCU%20CUBE.md)
+1. This documentation is provided for unofficial, non-commercial integration of WINGFLEXSIM flight-simulation devices.
+2. An integration does not imply official support, endorsement, partnership, or commercial authorization from WINGFLEXSIM. Do not claim such a relationship without written authorization.
+3. You are responsible for testing your implementation. WINGFLEXSIM is not responsible for issues arising from third-party software or integrations, including device damage, abnormal behavior, unstable connections, reduced game performance, or crashes.
+4. The documentation may contain errors, inaccuracies, or translation mistakes due to ongoing development and international collaboration.
