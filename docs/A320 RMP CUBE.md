@@ -1,4 +1,4 @@
-# A320 OVHD CUBE Protocol
+# A320 RMP CUBE Protocol
 
 USB Information:
 
@@ -37,8 +37,8 @@ The device send to the computer.
 | ATC MSG Key                      | Press: 1, Release: 0            | 0x02 |   8    |   1   |    0    |
 | AUTO LAND Key                    | Press: 1, Release: 0            | 0x04 |   8    |   2   |    0    |
 | Mode Selector - STBY             | Pointing: 1, Non-pointing: 0    | 0x08 |   8    |   3   |    1    |
-| Mode Selector - ON               | Pointing: 1, Non-pointing: 0    | 0x10 |   8    |   4   |    0    |
-| Mode Selector - AUTO             | Pointing: 1, Non-pointing: 0    | 0x20 |   8    |   5   |    0    |
+| Mode Selector - AUTO             | Pointing: 1, Non-pointing: 0    | 0x10 |   8    |   4   |    0    |
+| Mode Selector - ON               | Pointing: 1, Non-pointing: 0    | 0x20 |   8    |   5   |    0    |
 | TCAS Mode - STBY                 | Pointing: 1, Non-pointing: 0    | 0x40 |   8    |   6   |    1    |
 | TCAS Mode - TA                   | Pointing: 1, Non-pointing: 0    | 0x80 |   8    |   7   |    0    |
 | TCAS Mode - TA/RA                | Pointing: 1, Non-pointing: 0    | 0x01 |   9    |   0   |    0    |
@@ -124,6 +124,3 @@ Use this flag to control whether a digit is displayed. Binary 0010 0000 means di
 
 使用这个标志位，可以控制某一位数字是否显示。二进制 0010 0000 表示显示最左边第一位数字，0001 0000 表示第二位数字。以此类推。
 0011 1111 表示6位数字同时显示。
-
-
-
