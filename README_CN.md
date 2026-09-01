@@ -29,6 +29,7 @@
 | A320 OVHD CUBE | [协议](docs/A320%20OVHD%20CUBE.md) |
 | A320 RMP CUBE | [协议](docs/A320%20RMP%20CUBE.md) |
 | GMP 自动刹车与起落架面板 | [English](docs/GMP%20Auto%20Brake%20and%20Landing%20Gear%20Panel_EN.md) · [中文](docs/GMP%20Auto%20Brake%20and%20Landing%20Gear%20Panel.md) |
+| A320 MCDU | [English](docs/A320%20MCDU_EN.md) · [中文](docs/A320%20MCDU_CN.md) |
 | DAP 500 | [English](docs/DAP%20500_EN.md) · [中文](docs/DAP%20500_CN.md) |
 
 其他设备的文档将在协议完成编辑和测试后陆续添加。
