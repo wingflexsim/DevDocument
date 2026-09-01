@@ -28,6 +28,7 @@ The included examples use JavaScript and HTML so that communication can be teste
 | A320 FCU CUBE | [Protocol](docs/A320%20FCU%20CUBE.md) |
 | A320 OVHD CUBE | [Protocol](docs/A320%20OVHD%20CUBE.md) |
 | A320 RMP CUBE | [Protocol](docs/A320%20RMP%20CUBE.md) |
+| GMP Auto Brake and Landing Gear Panel | [Protocol](docs/GMP%20Auto%20Brake%20and%20Landing%20Gear%20Panel.md) |
 | DAP 500 | [English](docs/DAP%20500_EN.md) · [中文](docs/DAP%20500_CN.md) |
 
 Additional device documentation may be added as protocols are edited and tested.
